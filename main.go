@@ -36,6 +36,12 @@ func makeReq(w http.ResponseWriter, r http.Request, user string, left_color, lef
 
 func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		if len(r.UserAgent()) != 0 {
+			if !strings.Contains(r.UserAgent(), "github-camo") {
+				http.Error(w, "URL access only allowed on GitHub readme", http.StatusForbidden)
+				return
+			}
+		}
 		username := r.URL.Query().Get("username")
 		left_color := r.URL.Query().Get("left_color")
 		right_color := r.URL.Query().Get("right_color")
